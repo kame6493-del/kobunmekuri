@@ -1,0 +1,8 @@
+{
+  "appId": "jp.kobunmekuri.app",
+  "appName": "こぶんめくり",
+  "webDir": "dist",
+  "backgroundColor": "#f6f1e7",
+  "android": { "allowMixedContent": false },
+  "ios": { "contentInset": "never" }
+}

@@ -1,0 +1,28 @@
+node_modules
+dist
+*.log
+*.local
+.vscode/*
+.idea
+.DS_Store
+
+# 署名鍵・API キー・組み立てた成果物は入れない
+releases/
+*.jks
+*.keystore
+*.dpapi
+*.p8
+android/local.properties
+
+# 画面写真の撮影途中の物と確認の出力
+scripts/e2e_out/
+store/raw/
+**/__pycache__/
+
+# 本文の写し(ウィキソースから取り直せる。大きいので入れない)
+research/corpus/
+research/corpus_r/
+research/sentences_prev.jsonl
+research/**/tmp_*/
+research/tmp_sets/
+research/vite_dev.log
