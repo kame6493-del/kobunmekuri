@@ -135,3 +135,13 @@
 - iOS: GitHub にリポジトリを作って push→Actions で TestFlight。App Store Connect にアプリ(バンドルID jp.kobunmekuri.app)を作る
 - 例文は1語1文。2文目を足すと例文問題の幅が広がる(仕組みは複数の例文に対応済み)
 - 音声(読み上げ)は入れていない
+
+## Google Play(2026-10-04)
+- アプリ作成: app id 4972856329391217337、「こぶんめくり 古文単語600・例文つき」、jp.kobunmekuri.app
+- プライバシーポリシー: https://kame6493-del.github.io/apps/kobunmekuri/privacy.html
+- クローズドテスト Alpha(トラック 4698189987900568896): 日本・テスター AndroidClosedJP と nigatecho-testers・フィードバック kame6493@gmail.com。AAB kobunmekuri-1.0.0-vc1-release.aab(1 (1.0.0))
+- 掲載: store/play の icon・feature・画面写真5枚(1→5)。カテゴリ 教育。ターゲット 13歳以上(13〜15・16〜17・18以上)
+- 申告: 広告なし・ログインなし・広告ID なし・行政 いいえ・金融 なし・健康 機能なし・レーティング(その他、購入=はい、教育=はい)・データセーフティ 購入履歴(収集・必須・アプリの機能)
+- 2026-10-04 審査に送信(14件)
+- 残り: Play のアプリ内アイテム jp.kobunmekuri.app.full ¥610・RevenueCat のキーを入れて vc2
+- 1.0.1 (vc2): RevenueCat Android キー入り。AAB: C:\Users\yuichi1\Downloads\こぶんめくり_2026-10-03\app\releases\kobunmekuri-1.0.1-vc2-release.aab (6.57 MB, 6,891,602 バイト)
