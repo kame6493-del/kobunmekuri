@@ -8,7 +8,7 @@ export const BILLING = {
   entitlement: 'full',
   /** ストアで付ける値段(画面の文言用。実際の表示はストアから取った値を優先) */
   price: '¥610',
-  revenuecat: { ios: 'appl_BwkRXsaTGnmZqVnLEKQofatGAWB', android: '' },
+  revenuecat: { ios: 'appl_BwkRXsaTGnmZqVnLEKQofatGAWB', android: 'goog_alhXNGTbGKZunMEgasLOAseyrCv' },
 };
 
 export const APP = {
