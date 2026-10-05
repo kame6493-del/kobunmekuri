@@ -1,0 +1,31 @@
+1. Screen recording: attached to our reply in App Store Connect. It starts from app launch and shows the home screen, the first 10 words (multiple-choice meaning quiz with the answer, explanation and example sentence), the result screen, a flashcard, the example-sentence quiz (free trial), the word list and a word's detail page, the Keigo (honorifics) set that is locked for free users, and the In-App Purchase screen.
+We are a solo developer and do not own a physical iOS device, so the recording was made on the iOS Simulator (newest iPhone model, latest iOS available in Xcode) with the same build configuration. The red circles in the video mark each tap. The app has no account and no network-dependent content; the only device feature it uses is an optional daily local notification (off by default), so the behavior is the same on a physical device. Sandbox purchases can be tested with the In-App Purchase submitted together with this version. Depending on the simulator's storefront the price may be shown in another currency; the price in Japan is JPY 610.
+
+2. Purpose and audience
+Kobunmekuri (こぶんめくり) is a vocabulary app for Japanese high-school students preparing for university entrance exams (including the Common Test) in classical Japanese (kobun). It contains 601 classical Japanese words in order of importance, plus 42 honorific (keigo) words and 28 auxiliary verbs. Every word has meanings, an explanation, and at least one example sentence quoted from a classical text (e.g. The Tale of Genji, Tsurezuregusa, The Tale of the Bamboo Cutter, The Pillow Book) with its source chapter and a modern Japanese translation.
+Words answered wrong stay in a "weak words" (nigate) list and are removed after two correct answers in a row. Answered words come back for review after 1, 3, 7, 14, 30 and 60 days. If the user enters an exam date, the app calculates how many words to learn per day.
+
+3. How to use (no login or account is needed)
+- Launch the app. The home screen shows today's words, today's review and weak words.
+- Tap "はじめの10語をめくる" (first 10 words) or "今日の分" (today's words) to start.
+- Four study modes: 4択で意味 (choose the meaning), 意味から古語 (choose the word from the meaning), 例文で当てる (choose the meaning in an example sentence), 一問一答カード (flashcards with self-grading).
+- 単語の一覧・さがす (word list and search) opens each word's detail page.
+- Settings (gear icon): exam date, questions per round (5/10/20), font size, daily reminder, restore purchase, delete records.
+All data is bundled in the app and works offline. Study records stay on the device.
+
+4. External services
+- Apple In-App Purchase, managed through RevenueCat (purchase validation and restore). RevenueCat receives only an anonymous app user ID and the App Store transaction.
+- No other servers, no login service, no analytics, no ads (neither in the free nor in the full version), no AI services.
+- The daily reminder is a local notification scheduled on the device, only if the user turns it on in Settings.
+
+5. Regional differences
+The app is in Japanese only. It has no region-specific content or features and works the same in every region.
+
+6. Third-party material
+- Example sentences: each word has one quoted sentence (or a continuous part of one) from Japanese classical works whose copyright has long expired (Heian to Edo period: The Tale of Genji, Tsurezuregusa, The Tale of the Bamboo Cutter, The Pillow Book, Sarashina Diary, Hojoki, Okagami, Murasaki Shikibu Diary, Tosa Diary, Kagero Diary, Oku no Hosomichi). The transcriptions were taken from Japanese Wikisource (https://ja.wikisource.org/), whose text is available under the Creative Commons Attribution-ShareAlike license (CC BY-SA 4.0), which allows commercial use with attribution. Old character forms were changed to modern forms. Only one sentence per word is used; the full texts are not included. The source is shown in the app at the bottom of the home screen and in Settings > About ("本文の翻刻はウィキソース日本語版、CC BY-SA 4.0"), and each example shows its work and chapter.
+- The word list order, meanings, explanations and modern translations were all written by us for this app. No word list, example sentences or translations from commercial vocabulary books are used.
+- All icons and graphics are our own work.
+
+7. In-App Purchase
+One non-consumable product, "完全版" (Full Version, product ID jp.kobunmekuri.app.full), JPY 610, one-time purchase (no subscription). It unlocks all 601 words (the free version has the top 150 words), the example-sentence mode without limit (free: 5 trial questions), the Keigo set (42 words) and the Auxiliary verb set (28 items). Weak words, today's review and the exam-date plan are free.
+How to reach it: Home > tap the "完全版(買い切り)" banner at the bottom; or open 敬語セット / 助動詞セット and tap the "完全版で使えます" banner; or tap a locked word in the word list; or Settings > 完全版 > "完全版を見る". The purchase screen shows the free/full comparison table and the buy button. "購入の復元" (restore) is on the purchase screen and in Settings.
