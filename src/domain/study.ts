@@ -1,6 +1,6 @@
 import type { AppData, Mode, Record1, Settings, Word } from './types';
 
-/** 2回続けて正解したら苦手から外れる(ニガテ帳と同じ決まり) */
+/** 2回続けて正解したら、まちがえた語から外れる */
 export const CLEAR_STREAK = 2;
 /** 無料で使える見出し語(重要度順の上位) */
 export const FREE_MAIN = 150;

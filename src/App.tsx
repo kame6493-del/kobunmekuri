@@ -101,7 +101,7 @@ export default function App() {
       start('今日の分', [...due.slice(0, 40), ...fresh], 'mean');
     },
     review: () => data && start('今日の復習', dueWords(open, data, Date.now()).slice(0, 40), 'mean'),
-    nigate: () => data && start('苦手だけ', nigateOrder([...open, ...(all ?? []).filter((w) => w.set !== 'main' && !isLocked(w, premium))], data).slice(0, 20), 'mean'),
+    nigate: () => data && start('まちがえた語だけ', nigateOrder([...open, ...(all ?? []).filter((w) => w.set !== 'main' && !isLocked(w, premium))], data).slice(0, 20), 'mean'),
     mode: (mode: Mode) => {
       if (!data) return;
       const titles: Record<Mode, string> = { mean: '4択で意味', reverse: '意味から古語', example: '例文で当てる', card: '一問一答カード' };

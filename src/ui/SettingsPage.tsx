@@ -70,7 +70,7 @@ export function SettingsPage(p: {
           <button className="btn danger wide" onClick={() => setConfirm(true)}>学習の記録をすべて消す</button>
         ) : (
           <div className="confirm">
-            <p>苦手・復習の予定・連続日数がすべて消えます。元に戻せません。</p>
+            <p>まちがえた語・復習の予定・連続日数がすべて消えます。元に戻せません。</p>
             <div className="row-inline">
               <button className="btn" onClick={() => setConfirm(false)}>やめる</button>
               <button className="btn danger" onClick={() => { p.onReset(); setConfirm(false); setMsg('記録を消しました'); }}>消す</button>

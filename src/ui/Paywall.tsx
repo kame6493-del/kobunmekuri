@@ -45,7 +45,7 @@ export function Paywall(p: { billing: BillingState; main: Word[]; all: Word[]; o
           <tr><td>例文で当てる</td><td>{EXAMPLE_TRIAL}問おためし</td><td>{exN}語の例文</td></tr>
           <tr><td>敬語セット</td><td>一覧のみ</td><td>{keigo}語</td></tr>
           <tr><td>助動詞セット</td><td>一覧のみ</td><td>{jodo}語</td></tr>
-          <tr><td>苦手・今日の復習・逆算</td><td>○</td><td>○</td></tr>
+          <tr><td>まちがえた語・今日の復習・逆算</td><td>○</td><td>○</td></tr>
           <tr><td>広告</td><td>なし</td><td>なし</td></tr>
         </tbody>
       </table>

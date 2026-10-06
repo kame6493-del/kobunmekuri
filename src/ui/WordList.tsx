@@ -25,7 +25,7 @@ export function WordList(p: { main: Word[]; data: AppData; premium: boolean; onB
       <TopBar title="単語の一覧" onClose={p.onBack} />
       <input className="search" type="search" placeholder="古語・漢字・意味でさがす" value={q} onChange={(e) => setQ(e.target.value)} />
       <div className="seg">
-        {([['all', 'すべて'], ['nigate', '苦手'], ['learned', '覚えた'], ['new', 'まだ']] as [Filter, string][]).map(([k, l]) => (
+        {([['all', 'すべて'], ['nigate', 'まちがい'], ['learned', '覚えた'], ['new', 'まだ']] as [Filter, string][]).map(([k, l]) => (
           <button key={k} className={f === k ? 'on' : ''} onClick={() => setF(k)}>{l}</button>
         ))}
       </div>

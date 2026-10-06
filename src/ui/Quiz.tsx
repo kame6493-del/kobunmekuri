@@ -124,8 +124,8 @@ export function Quiz(p: {
         <section className="result-hero">
           <p className="result-score"><b>{ok}</b><span>/ {answers.length}</span></p>
           <ul className="result-moves">
-            <li>苦手から外れた<b>{cleared}語</b></li>
-            <li>新しく苦手に入った<b>{newNigate}語</b></li>
+            <li>まちがいが消えた<b>{cleared}語</b></li>
+            <li>新しくまちがえた<b>{newNigate}語</b></li>
           </ul>
         </section>
         <ul className="result-list">
@@ -165,7 +165,7 @@ export function Quiz(p: {
         <p className="q-meta">
           <span className="q-tag">{q.word.set === 'keigo' ? '敬語' : q.word.set === 'jodoshi' ? '助動詞' : `重要度 ${q.word.rank}`}</span>
           <span>{q.word.pos}</span>
-          {isNigate(p.data.records[q.word.id]) && !answeredNow && <span className="q-ng">苦手</span>}
+          {isNigate(p.data.records[q.word.id]) && !answeredNow && <span className="q-ng">まちがい</span>}
         </p>
         {s.mode === 'reverse' && !s.kind ? (
           <>

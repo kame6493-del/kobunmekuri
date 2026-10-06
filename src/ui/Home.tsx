@@ -40,7 +40,7 @@ export function Home(p: {
         ) : first ? (
           <>
             <p className="hero-lead">1日10語、めくるだけ。</p>
-            <p className="hero-sub">間違えた語は「苦手」に残り、2回続けて正解すると消えます。覚えた語は1日後・3日後・1週間後…と間をあけてまた出ます。</p>
+            <p className="hero-sub">間違えた語は一覧に残り、2回続けて正解すると消えます。覚えた語は1日後・3日後・1週間後…と間をあけてまた出ます。</p>
           </>
         ) : (
           <>
@@ -58,7 +58,7 @@ export function Home(p: {
         <span className="chip">今日 <b>{today}</b>問</span>
         <span className="chip">連続 <b>{streak}</b>日</span>
         <span className="chip">覚えた <b>{pr.learned}</b>/{pr.total}</span>
-        <span className="chip ng">苦手 <b>{nigateAll}</b></span>
+        <span className="chip ng">まちがい <b>{nigateAll}</b></span>
       </div>
 
       <div className="twin">
@@ -66,7 +66,7 @@ export function Home(p: {
           <b>今日の復習</b><span>{due ? `${due}語が待っています` : '今日の分は終わりました'}</span>
         </button>
         <button className="tile nigate" onClick={p.onNigate} disabled={nigateAll === 0}>
-          <b>苦手だけ</b><span>{nigateAll ? `${nigateAll}語。2回続けて正解で消えます` : 'まだありません'}</span>
+          <b>まちがえた語だけ</b><span>{nigateAll ? `${nigateAll}語。2回続けて正解で消えます` : 'まだありません'}</span>
         </button>
       </div>
 

@@ -5,7 +5,7 @@ import { TopBar, WordBody } from './Quiz';
 export function WordDetail(p: { word: Word; data: AppData; onBack: () => void }) {
   const w = p.word;
   const r = p.data.records[w.id];
-  const state = !r ? 'まだ解いていません' : isNigate(r) ? `苦手(あと${2 - r.streak}回続けて正解で外れます)` : isLearned(r) ? '覚えた' : '練習中';
+  const state = !r ? 'まだ解いていません' : isNigate(r) ? `まちがえた語(あと${2 - r.streak}回続けて正解で外れます)` : isLearned(r) ? '覚えた' : '練習中';
   return (
     <div className="page wdetail">
       <TopBar title={w.set === 'keigo' ? '敬語' : w.set === 'jodoshi' ? '助動詞' : `重要度 ${w.rank}`} onClose={p.onBack} />
