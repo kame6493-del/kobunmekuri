@@ -1,7 +1,8 @@
 """Play ストア用の画面写真とフィーチャー画像(作り直した見た目)。python scripts/make_screenshots.py [URL]
+--compose-only で撮影を飛ばして store/raw/ から組むだけにできる。
 1) 開発サーバーの見本データ(?demo=1&premium=1)で画面を撮る → store/raw/
    完全版の状態で撮るので「無料版」の文字は出ない。購入画面(値段)は撮らない
-2) 和紙の地に見出しを書いて重ねる → store/play/play_shot_1〜5.png(1080x1920)
+2) 紺の地(梅の花びら・金の星)に HG明朝E の見出しを書いて重ねる(2026-10-10 和紙の地をやめた。元は store/_cream_backup_2026-10-10/) → store/play/play_shot_1〜5.png(1080x1920)
 3) フィーチャー画像 store/play/feature.png(1024x500)。アイコン 512 は scripts/make_icon.py
 iOS の画面写真(store/shot_*.png)は iOS を出し直さないので作らない。"""
 import json
@@ -106,61 +107,100 @@ def art(name):
     return Image.open(os.path.join(IMG, name + ".webp")).convert("RGBA")
 
 
+NAVY = (22, 41, 70)       # アイコンの紺(29,60,92)を少し深く
+NAVY2 = (12, 24, 44)
+UME = (240, 160, 172)     # 梅の花の色(添え書き)
+GOLD = (205, 172, 104)    # 枠の金
+TITLE_F = "C:/Windows/Fonts/HGRME.TTC"   # HG明朝E(見出し)
+SUB_F = "C:/Windows/Fonts/yumindb.ttf"   # 游明朝 Demibold(添え書き)
+
+
+def tfont(size):
+    return ImageFont.truetype(TITLE_F, size)
+
+
+def navy_ground(W, H, seed=3):
+    """紺の地(上から下へ深く)に、梅の花びらを少しだけ散らす。2026-10-10 和紙の地をやめた"""
+    import random
+    c = Image.new("RGBA", (W, H))
+    d = ImageDraw.Draw(c)
+    for y in range(H):
+        k = y / H
+        d.line([(0, y), (W, y)], fill=tuple(round(NAVY[i] + (NAVY2[i] - NAVY[i]) * k) for i in range(3)) + (255,))
+    rnd = random.Random(seed)
+    petal = art("ic_plum")
+    for _ in range(int(W * H / 90000)):
+        s = rnd.randint(22, 46)
+        pe = petal.resize((s, int(petal.height * s / petal.width)), Image.LANCZOS).rotate(rnd.randint(0, 359), expand=True)
+        a = pe.split()[-1].point(lambda v, f=rnd.uniform(0.18, 0.4): int(v * f))
+        pe.putalpha(a)
+        c.alpha_composite(pe, (rnd.randint(0, W - 40), rnd.randint(0, H - 40)))
+    # 細い金の星(アイコンの夜空)
+    for _ in range(int(W * H / 30000)):
+        x, y = rnd.randint(0, W), rnd.randint(0, H)
+        r = rnd.choice((1, 1, 2))
+        d.ellipse((x - r, y - r, x + r, y + r), fill=GOLD + (rnd.randint(60, 150),))
+    return c
+
+
 def compose():
     W, H = 1080, 1920
     for k, (name, title, sub) in enumerate(SHOTS, 1):
-        c = Image.new("RGBA", (W, H), BG + (255,))
-        # 上の飾り: 見本の景色の絵
-        head = art("head_sub")
-        head = head.resize((W, int(head.height * W / head.width)), Image.LANCZOS)
-        c.alpha_composite(head, (0, 0))
-        veil = Image.new("RGBA", (W, head.height), BG + (215,))
-        c.alpha_composite(veil, (0, 0))
+        c = navy_ground(W, H, seed=k)
+        # 四すみに大きめの梅をはっきり
+        for (px, py, ps, rot) in ((W - 120, 30, 96, 20), (W - 70, 150, 54, -30), (24, H - 150, 110, 10), (130, H - 70, 50, 40)):
+            pe = art("ic_plum").resize((ps, int(126 * ps / 110)), Image.LANCZOS).rotate(rot, expand=True)
+            c.alpha_composite(pe, (px, py))
         d = ImageDraw.Draw(c)
-        size = 76
-        while font(size).getlength(title) > 900:
+        size = 84
+        while tfont(size).getlength(title) > 880:
             size -= 2
-        f1, f2 = font(size), font(40, 500)
+        f1, f2 = tfont(size), ImageFont.truetype(SUB_F, 40)
         tw = d.textlength(title, font=f1)
-        d.text(((W - tw) / 2, 70 + (76 - size) // 2), title, font=f1, fill=SUMI)
+        d.text(((W - tw) / 2, 74 + (84 - size) // 2), title, font=f1, fill=(255, 255, 255))
         sw = d.textlength(sub, font=f2)
-        d.text(((W - sw) / 2, 180), sub, font=f2, fill=AI)
-        seal = art("ic_seal").resize((34, 43))
-        c.alpha_composite(seal, (int((W + tw) / 2) + 8, 82))
-        # 画面
+        d.text(((W - sw) / 2, 192), sub, font=f2, fill=UME)
+        # 画面(金の細い枠)
         shot = Image.open(os.path.join(RAW, name + ".png")).convert("RGB")
         sw2 = 840
         sh2 = int(shot.height * sw2 / shot.width)
         shot = shot.resize((sw2, sh2), Image.LANCZOS)
-        x, y = (W - sw2) // 2, 290
+        x, y = (W - sw2) // 2, 300
         shadow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        ImageDraw.Draw(shadow).rounded_rectangle([x + 6, y + 14, x + sw2 + 6, y + sh2 + 14], radius=48, fill=(70, 50, 20, 70))
-        c.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(18)))
-        frame = Image.new("RGBA", (sw2 + 16, sh2 + 16), (0, 0, 0, 0))
-        ImageDraw.Draw(frame).rounded_rectangle([0, 0, sw2 + 15, sh2 + 15], radius=54, fill=(250, 247, 240, 255), outline=(214, 202, 178, 255), width=3)
-        c.alpha_composite(frame, (x - 8, y - 8))
+        ImageDraw.Draw(shadow).rounded_rectangle([x + 4, y + 18, x + sw2 + 4, y + sh2 + 18], radius=48, fill=(0, 0, 0, 130))
+        c.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(22)))
+        frame = Image.new("RGBA", (sw2 + 20, sh2 + 20), (0, 0, 0, 0))
+        ImageDraw.Draw(frame).rounded_rectangle([0, 0, sw2 + 19, sh2 + 19], radius=56, fill=NAVY2 + (255,), outline=GOLD + (255,), width=3)
+        c.alpha_composite(frame, (x - 10, y - 10))
         c.alpha_composite(rounded(shot, 46), (x, y))
-        # 下の梅
-        plum = art("plum_corner")
-        plum = plum.resize((120, int(plum.height * 120 / plum.width)))
-        c.alpha_composite(plum, (0, H - plum.height))
         c.convert("RGB").save(os.path.join(PLAY, f"play_shot_{k}.png"), optimize=True)
         print("play_shot", k)
 
-    # フィーチャー画像 1024x500
+    # フィーチャー画像 1024x500: 左は紺に名前、右は山と塔の絵を窓のように切り抜く
     W, H = 1024, 500
-    c = Image.new("RGBA", (W, H), BG + (255,))
+    c = navy_ground(W, H, seed=9)
     land = art("head_home")
-    land = land.resize((W, int(land.height * W / land.width)), Image.LANCZOS)
-    c.alpha_composite(land, (0, H - land.height + 10))
+    lh = 420
+    land = land.resize((int(land.width * lh / land.height), lh), Image.LANCZOS)
+    win_w = 430
+    land = land.crop((land.width - win_w - 20, 0, land.width - 20, lh))
+    m = Image.new("L", land.size, 0)
+    ImageDraw.Draw(m).rounded_rectangle((0, 0, win_w - 1, lh - 1), radius=200, fill=255)   # 丸窓(上下が丸い)
+    land.putalpha(Image.composite(land.split()[-1], Image.new("L", land.size, 0), m))
+    wx, wy = W - win_w - 40, 40
+    ring = Image.new("RGBA", (win_w + 12, lh + 12), (0, 0, 0, 0))
+    ImageDraw.Draw(ring).rounded_rectangle((0, 0, win_w + 11, lh + 11), radius=206, outline=GOLD + (255,), width=3)
+    c.alpha_composite(land, (wx, wy))
+    c.alpha_composite(ring, (wx - 6, wy - 6))
     d = ImageDraw.Draw(c)
-    icon = Image.open(os.path.join(ROOT, "assets", "icon.png")).convert("RGB").resize((176, 176), Image.LANCZOS)
-    c.alpha_composite(rounded(icon, 38), (84, 60))
-    f1, f2 = font(92), font(36, 600)
-    d.text((300, 62), "こぶんめくり", font=f1, fill=SUMI)
-    seal = art("ic_seal").resize((30, 38))
-    c.alpha_composite(seal, (300 + int(d.textlength("こぶんめくり", font=f1)) + 6, 82))
-    d.text((306, 186), "― 古文単語600・例文つき ―", font=f2, fill=AI)
+    icon = Image.open(os.path.join(ROOT, "assets", "icon.png")).convert("RGB").resize((130, 130), Image.LANCZOS)
+    c.alpha_composite(rounded(icon, 30), (60, 70))
+    f1, f2 = tfont(82), ImageFont.truetype(SUB_F, 32)
+    d.text((58, 228), "こぶんめくり", font=f1, fill=(255, 255, 255))
+    d.text((62, 344), "古文単語600・例文つき", font=f2, fill=UME)
+    for (px, py, ps, rot) in ((470, 380, 70, 15), (520, 440, 40, -25), (250, 60, 46, 30)):
+        pe = art("ic_plum").resize((ps, int(126 * ps / 110)), Image.LANCZOS).rotate(rot, expand=True)
+        c.alpha_composite(pe, (px, py))
     c.convert("RGB").save(os.path.join(PLAY, "feature.png"), optimize=True)
     print("feature")
 
