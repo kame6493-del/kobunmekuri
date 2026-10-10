@@ -1,0 +1,5 @@
+kobun-serif.woff2 is a subset of Noto Serif JP (variable).
+© 2017-2023 Adobe (http://www.adobe.com/).
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is available with a FAQ at: https://openfontlicense.org
+The font is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND.

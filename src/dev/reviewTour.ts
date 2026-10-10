@@ -70,7 +70,7 @@ export async function runReviewTour() {
   await sleep(3500); // ホーム(初回)を見せる
 
   // はじめの10語(4択で意味)。正解と不正解が混ざるように押す
-  if (await tap(text('はじめの10語をめくる'), 1500)) {
+  if (await tap(text('重要語からめくる'), 1500)) {
     const picks = [0, 1, 2, 3, 0, 1, 2, 3, 0, 1];
     for (let i = 0; i < picks.length; i++) {
       await find(any, 6000, '.choice');
@@ -81,12 +81,13 @@ export async function runReviewTour() {
   await find(any, 6000, '.result-hero');
   await sleep(1200);
   await scrollSlow(document.body.scrollHeight, 1500); await sleep(1000);
-  await tap(text('ホームへ'), 2000);
+  await tap(text('ホームに戻る'), 2000);
+  await tap(text('学習'), 1500, '.tabbar button');
 
   // 一問一答カード: めくって自己採点
   if (await tap(text('一問一答カード'), 1500)) {
     await tap(any, 2500, '.card-flip');
-    await tap(text('覚えてた'), 1200);
+    await tap(text('わかった'), 1200);
     await back();
   }
 
@@ -98,11 +99,11 @@ export async function runReviewTour() {
   }
 
   // 単語の一覧 → 詳しい画面(意味・解説・例文と出典)
-  if (await tap(text('単語の一覧・さがす'), 1800)) {
+  if (await tap(text('辞書'), 1800, '.tabbar button')) {
     await tap(any, 2000, '.row:not(.locked)');
     await scrollSlow(document.body.scrollHeight, 2000); await sleep(1500);
     await back();
-    await back();
+    await tap(text('学習'), 1500, '.tabbar button');
   }
 
   // 敬語セット(無料は一覧だけ)→ 完全版の購入画面
@@ -114,6 +115,6 @@ export async function runReviewTour() {
   await scrollSlow(document.body.scrollHeight, 2500);
   await sleep(2500);
   // 購入ボタン(シミュレーターでストアの商品が取れたときだけ押せる)
-  await tap((b) => b.closest('.pw-cta') !== null && /で買う/.test(b.innerText), 10000);
+  await tap((b) => b.closest('.pw-cta') !== null && /購入する/.test(b.innerText), 10000);
   await sleep(6000);
 }

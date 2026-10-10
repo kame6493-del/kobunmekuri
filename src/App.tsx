@@ -12,6 +12,8 @@ import { WordDetail } from './ui/WordDetail';
 import { SetPage } from './ui/SetPage';
 import { Paywall } from './ui/Paywall';
 import { SettingsPage } from './ui/SettingsPage';
+import { NigatePage, PlanPage, ReviewPage, StudyPage } from './ui/Pages';
+import { Art, TabBar, type Tab } from './ui/Chrome';
 
 export type Route =
   | { name: 'home' }
@@ -20,7 +22,13 @@ export type Route =
   | { name: 'word'; id: string }
   | { name: 'set'; set: WordSet }
   | { name: 'paywall' }
-  | { name: 'settings' };
+  | { name: 'settings' }
+  | { name: 'study' }
+  | { name: 'nigate' }
+  | { name: 'review' }
+  | { name: 'plan' };
+
+const TABS: Tab[] = ['home', 'study', 'nigate', 'list', 'settings'];
 
 export default function App() {
   const [data, setData] = useState<AppData | null>(null);
@@ -54,6 +62,8 @@ export default function App() {
   const push = useCallback((r: Route) => setStack((s) => [...s, r]), []);
   const back = useCallback(() => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s)), []);
   const home = useCallback(() => setStack([{ name: 'home' }]), []);
+  /** 下のタブ: ホームの上に1枚だけ積む(戻るでホームへ) */
+  const tab = useCallback((t: Tab) => setStack(t === 'home' ? [{ name: 'home' }] : [{ name: 'home' }, { name: t } as Route]), []);
 
   // Android の戻るボタン
   useEffect(() => {
@@ -72,6 +82,10 @@ export default function App() {
   const open = useMemo(() => main.filter((w) => !isLocked(w, premium)), [main, premium]);
   const byId = useMemo(() => new Map((all ?? []).map((w) => [w.id, w])), [all]);
   const plan = useMemo(() => (data ? makePlan(open, data, data.settings.examDate, Date.now()) : null), [open, data]);
+  /** 苦手に出す語(鍵の無い本編と、鍵の無いセットの語) */
+  const nigatePool = useMemo(() => [...open, ...(all ?? []).filter((w) => w.set !== 'main' && !isLocked(w, premium))], [open, all, premium]);
+  const nigateList = useMemo(() => (data ? nigateOrder(nigatePool, data) : []), [nigatePool, data]);
+  const dueList = useMemo(() => (data ? dueWords(open, data, Date.now()) : []), [open, data]);
 
   const start = useCallback((title: string, ws: Word[], mode: Mode, extra: Partial<Session> = {}) => {
     if (ws.length === 0) return;
@@ -100,8 +114,8 @@ export default function App() {
       const fresh = unseen(open, data).slice(0, plan?.perDay || data.settings.batch);
       start('今日の分', [...due.slice(0, 40), ...fresh], 'mean');
     },
-    review: () => data && start('今日の復習', dueWords(open, data, Date.now()).slice(0, 40), 'mean'),
-    nigate: () => data && start('まちがえた語だけ', nigateOrder([...open, ...(all ?? []).filter((w) => w.set !== 'main' && !isLocked(w, premium))], data).slice(0, 20), 'mean'),
+    review: () => data && start('今日の復習', dueWords(open, data, Date.now()).slice(0, 40), 'mean', { review: true }),
+    nigate: (ws?: Word[]) => data && start('苦手', (ws ?? nigateOrder(nigatePool, data)).slice(0, 20), 'mean'),
     mode: (mode: Mode) => {
       if (!data) return;
       const titles: Record<Mode, string> = { mean: '4択で意味', reverse: '意味から古語', example: '例文で当てる', card: '一問一答カード' };
@@ -118,7 +132,7 @@ export default function App() {
       }
       start(titles[mode], nextBatch(open, data.settings.batch), mode);
     },
-  }), [data, open, main, all, plan, premium, start, nextBatch, push]);
+  }), [data, open, main, nigatePool, plan, premium, start, nextBatch, push]);
 
   const answered = useCallback((w: Word, ok: boolean, trial: boolean) => {
     update((d) => {
@@ -134,7 +148,7 @@ export default function App() {
   }, []);
 
   if (loadError) return <div className="fatal">{loadError}</div>;
-  if (!data || !all) return <div className="splash"><span>こぶんめくり</span></div>;
+  if (!data || !all) return <div className="splash"><Art name="app_icon" className="splash-icon" /><span>こぶんめくり</span></div>;
 
   const fontStyle = { ['--fs' as string]: String(data.settings.fontScale) };
 
@@ -142,32 +156,49 @@ export default function App() {
     <div className="app" style={fontStyle}>
       {route.name === 'home' && (
         <Home
-          data={data} main={main} open={open} all={all} premium={premium} plan={plan}
+          data={data} main={main} open={open} premium={premium} plan={plan} nigate={nigateList.length}
           onToday={starters.today}
-          onReview={starters.review}
-          onNigate={starters.nigate}
-          onMode={starters.mode}
-          onList={() => push({ name: 'list' })}
-          onSet={(s) => push({ name: 'set', set: s })}
+          onReview={() => push({ name: 'review' })}
+          onNigate={() => tab('nigate')}
+          onExample={() => starters.mode('example')}
+          onPlan={() => push({ name: 'plan' })}
+          onList={() => tab('list')}
           onPaywall={() => push({ name: 'paywall' })}
-          onSettings={() => push({ name: 'settings' })}
+          onSettings={() => tab('settings')}
         />
+      )}
+      {route.name === 'study' && (
+        <StudyPage
+          data={data} premium={premium} first={Object.keys(data.records).length === 0}
+          keigoN={all.filter((w) => w.set === 'keigo').length} jodoN={all.filter((w) => w.set === 'jodoshi').length}
+          onBack={back} onToday={starters.today} onMode={starters.mode}
+          onSet={(s) => push({ name: 'set', set: s })} onList={() => tab('list')}
+        />
+      )}
+      {route.name === 'nigate' && (
+        <NigatePage words={nigateList} data={data} onBack={back} onStart={(ws) => starters.nigate(ws)} onWord={(id) => push({ name: 'word', id })} onStudy={() => tab('study')} />
+      )}
+      {route.name === 'review' && (
+        <ReviewPage words={dueList} data={data} onBack={back} onStart={starters.review} onToday={starters.today} onWord={(id) => push({ name: 'word', id })} />
+      )}
+      {route.name === 'plan' && (
+        <PlanPage open={open} data={data} plan={plan} due={dueList.length} nigate={nigateList.length} onBack={back} onSettings={() => tab('settings')} />
       )}
       {route.name === 'quiz' && (
         <Quiz
           key={route.session.seed}
-          session={route.session} byId={byId} pool={all} data={data}
+          session={route.session} byId={byId} pool={all} data={data} dueLeft={dueList.length}
           onAnswer={answered}
           onEnd={onSessionEnd}
           onClose={back}
           onHome={home}
-          onAgain={(s) => { back(); start(s.title, s.ids.map((id) => byId.get(id)!).filter(Boolean), s.mode, { kind: s.kind }); }}
+          onAgain={(s) => { back(); start(s.title, s.ids.map((id) => byId.get(id)!).filter(Boolean), s.mode, { kind: s.kind, review: s.review }); }}
           onPaywall={() => push({ name: 'paywall' })}
           onWord={(id) => push({ name: 'word', id })}
         />
       )}
       {route.name === 'list' && (
-        <WordList main={main} data={data} premium={premium} onBack={back} onWord={(id) => push({ name: 'word', id })} onPaywall={() => push({ name: 'paywall' })} />
+        <WordList main={main} data={data} premium={premium} onBack={back} onWord={(id) => push({ name: 'word', id })} onPaywall={() => push({ name: 'paywall' })} onSettings={() => tab('settings')} />
       )}
       {route.name === 'word' && byId.get(route.id) && (
         <WordDetail word={byId.get(route.id)!} data={data} onBack={back} />
@@ -198,6 +229,7 @@ export default function App() {
           onRestored={() => loadBilling().then(setBilling)}
         />
       )}
+      {(TABS as string[]).includes(route.name) && <TabBar active={route.name as Tab} onTab={tab} nigate={nigateList.length} />}
     </div>
   );
 }

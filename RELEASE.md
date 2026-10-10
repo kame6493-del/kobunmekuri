@@ -145,3 +145,20 @@
 - 2026-10-04 審査に送信(14件)
 - 残り: Play のアプリ内アイテム jp.kobunmekuri.app.full ¥610・RevenueCat のキーを入れて vc2
 - 1.0.1 (vc2): RevenueCat Android キー入り。AAB: C:\Users\yuichi1\Downloads\こぶんめくり_2026-10-03\app\releases\kobunmekuri-1.0.1-vc2-release.aab (6.57 MB, 6,891,602 バイト)
+
+## 見た目の作り直し 1.0.2 (vc3)(2026-10-10)
+
+持ち主が ChatGPT に作らせた UI 見本(`Downloads\kobun_ref_1〜7_941x1672.png`)に寄せて、画面・配色・文言・アイコンを作り直した。機能・課金・単語データは変えていない。
+
+- 絵: 見本から切り出して Real-ESRGAN(x4plus_anime_6B)で4倍にした(`scripts/make_ui_assets.py`、拡大は `scripts/esrgan.py`、重みは `..\work_redesign\` に置きリポジトリに入れない)。出力は `public/img/*.webp`(約0.8MB)。線のアイコン(戻る・タブ・歯車など)は見本の線画に合わせて SVG で描いた(`src/ui/Chrome.tsx`)
+- 書体: 見出しは Noto Serif JP(SIL OFL 1.1)をアプリで使う文字だけに絞って同梱(`scripts/make_font.py` → `public/fonts/kobun-serif.woff2` 846KB、表記は設定の「このアプリについて」と `public/fonts/LICENSE-NotoSerifJP.txt`)
+- 配色: 藍 #1E3A5F・和紙・朱 #C94F3F・深緑 #59714E・金茶 #D6B656・墨 #2F2F2F(見本のカラーパレット)
+- 画面: 下のタブ(ホーム・学習・苦手・辞書・設定)を足し、今日の復習・苦手・学習計画を独立した画面にした(中身は今ある記録の表示だけ)。ホーム(題字と景色・進み具合・4つのタイル・試験日まで)/学習(覚え方4つ・敬語/助動詞セット)/苦手(2回続けて正解で消える・あと何回)/今日の復習(期限の来た語と間隔)/学習計画(残り日数・覚えた語・復習待ち・苦手・この7日の答えた数)/4択(A〜D・正解です!/残念…・なぜ正解か・例文・他の選択肢について)/例文で当てる/カード(わかった・苦手に入れる)/学習結果/本日の復習おわり/単語詳細/辞書/完全版(機能4つと比較表)/敬語セット(尊敬・謙譲・丁寧のタブ)/助動詞セット/設定/空の状態(猫・縁側)
+- 文言: 見本どおり「苦手」に戻した(10-07 に App Store 4.3(a) 対策で「まちがえた語」にしていた。iOS は出し直さないため)
+- 見本にあって入れなかった物(今の機能に無い): 音声の読み上げ・タイマー・☆の重要度・しおり(ブックマーク)・検索履歴・「わからない」ボタン・「あいまい」の3段目・お問い合わせ・学習の推移の折れ線・選んだ語だけ復習・助動詞の意味グループ分け・広告表示「あり」(このアプリは無料版も広告なし)
+- アイコン: 見本 kobun_ref_1 の左上のアイコンを切り出して 1024 に(`scripts/make_icon.py`)。角の外の白は紺で埋めた。Android 適応アイコンは前景=この絵(本が直径66%の円に収まる大きさ)・背景=単色 #1D3C5C、確認は `docs/icon_check.png`。iOS の AppIcon 1024(不透明)・スプラッシュ・Web マニフェストのアイコン・Play の icon_512 も差し替え。旧素材は `..\退避_2026-10-10_旧デザイン\`
+- 確かめたこと: `npm test` 39件合格/`npm run build` 通過/`python scripts/e2e.py`(製品ビルド・課金キーなし)と `--dev`(疑似購入)を 375・430 幅の両方で全項目 OK/`python scripts/shots_redesign.py` で全画面を両幅で撮って横はみ出し0・コンソールエラー0/`scripts/check_review_tour.py` で審査用ツアーが購入画面まで進む
+- 見本との比較: `docs/compare_redesign_1〜7.png`・一覧 `docs/compare_redesign_all.png`(大きいので git には入れていない。作り直しは `python scripts/make_compare.py`)
+- Play の素材: `store/play/play_shot_1〜5.png`(1080x1920、完全版の見本データで撮り値段・「無料」は写さない)・`feature.png`・`icon_512.png`(`python scripts/make_screenshots.py`)。iOS の `store/shot_*.png` は作り直していない
+- AAB: `releases\kobunmekuri-1.0.2-vc3-release.aab`(8,734,854 バイト)。jarsigner で verified、証明書 SHA-256 97cc684f…3b6d(vc2 と同じ鍵)、aapt2 で versionCode 3 / versionName 1.0.2 / targetSdk 36
+- ストアへのアップロードはしていない

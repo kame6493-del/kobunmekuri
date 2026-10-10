@@ -175,6 +175,8 @@ export interface Question {
   answer: number;
   /** 例文問題のときの例文 */
   exIndex?: number;
+  /** 選択肢それぞれの元の語(答えたあとの「他の選択肢について」用)。語から作っていない選択肢の時は無い */
+  from?: Word[];
 }
 
 /** 選択肢に出す文字(意味の問題は quiz、語を当てる問題は見出し語) */
@@ -218,7 +220,7 @@ export function makeQuestion(word: Word, mode: Mode, pool: Word[], rand: () => n
       return { word, mode, prompt, choices: all, answer: all.indexOf(options[i]), exIndex };
     }
   }
-  return { word, mode, prompt, choices: options, answer: choices.indexOf(word), exIndex };
+  return { word, mode, prompt, choices: options, answer: choices.indexOf(word), exIndex, from: choices };
 }
 
 /** 敬語の種類の3択。選択肢の並びは毎回「尊敬・謙譲・丁寧」で固定(並びが変わると押し間違える) */

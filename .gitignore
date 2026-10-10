@@ -26,3 +26,7 @@ research/sentences_prev.jsonl
 research/**/tmp_*/
 research/tmp_sets/
 research/vite_dev.log
+
+# 作り直しの確認用の画面写真と比較画像(scripts/shots_redesign.py・make_compare.py で作り直せる。大きいので入れない)
+docs/screens/
+docs/compare_redesign_*.png
