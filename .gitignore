@@ -30,3 +30,7 @@ research/vite_dev.log
 # 作り直しの確認用の画面写真と比較画像(scripts/shots_redesign.py・make_compare.py で作り直せる。大きいので入れない)
 docs/screens/
 docs/compare_redesign_*.png
+
+# 宣伝の動画・サムネ(ずんだもんの立ち絵を合成するので公開リポジトリに入れない)
+store/promo/
+store/_cream_backup_*/promo/
